@@ -16,8 +16,4 @@
     <ProjectReference Include="..\LoggerService\LoggerService.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Config\" />
-  </ItemGroup>
-
 </Project>

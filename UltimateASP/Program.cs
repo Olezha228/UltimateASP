@@ -1,7 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
-    "/nlog.config"));
+    "/Config/nlog.config"));
 
 
 builder.Services.ConfigureCors();
