@@ -1,4 +1,6 @@
-﻿namespace UltimateASP.ServiceExtensions;
+﻿using LoggerService;
+
+namespace UltimateASP.ServiceExtensions;
 
 public static class ServiceExtensions
 {
@@ -11,8 +13,13 @@ public static class ServiceExtensions
                     .AllowAnyHeader());
         });
 
+    // ReSharper disable once InconsistentNaming
     public static void ConfigureIISIntegration(this IServiceCollection services) =>
         services.Configure<IISOptions>(options =>
         {
         });
+
+    public static void ConfigureLoggerService(this IServiceCollection services) =>
+        services.AddSingleton<ILoggerManager, LoggerManager>();
+
 }

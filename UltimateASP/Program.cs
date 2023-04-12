@@ -1,7 +1,12 @@
 var builder = WebApplication.CreateBuilder(args);
 
+LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
+    "/nlog.config"));
+
+
 builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
+builder.Services.ConfigureLoggerService();
 
 builder.Services.AddControllers();
 
@@ -17,11 +22,7 @@ app.Use(async (_, next) =>
     await next.Invoke();
     Console.WriteLine($"Logic after executing the next delegate in the Use method");
 });
-app.Run(async context =>
-{
-    Console.WriteLine($"Writing the response to the client in the Run method");
-    await context.Response.WriteAsync("Hello from the middleware component.");
-});
+
 app.MapControllers();
 
 app.Run();
