@@ -1,10 +1,19 @@
-﻿using LoggerService;
+﻿using Microsoft.EntityFrameworkCore;
+using Repository;
 
 namespace UltimateASP.ServiceExtensions;
 
 public static class ServiceExtensions
 {
-    public static void ConfigureCors(this IServiceCollection services) =>
+    public static void ConfigureServices(this IServiceCollection services, ConfigurationManager configuration)
+    {
+        services.ConfigureCors();
+        services.ConfigureIISIntegration();
+        services.AddControllers();
+        services.ConfigureSqlContext(configuration);
+    }
+
+    private static void ConfigureCors(this IServiceCollection services) =>
         services.AddCors(options =>
         {
             options.AddPolicy("CorsPolicy", builder =>
@@ -14,12 +23,14 @@ public static class ServiceExtensions
         });
 
     // ReSharper disable once InconsistentNaming
-    public static void ConfigureIISIntegration(this IServiceCollection services) =>
+    private static void ConfigureIISIntegration(this IServiceCollection services) =>
         services.Configure<IISOptions>(options =>
         {
         });
 
-    public static void ConfigureLoggerService(this IServiceCollection services) =>
-        services.AddSingleton<ILoggerManager, LoggerManager>();
+    private static void ConfigureSqlContext(this IServiceCollection services,
+        IConfiguration configuration) =>
+        services.AddDbContext<RepositoryContext>(opts =>
+            opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
 
 }
