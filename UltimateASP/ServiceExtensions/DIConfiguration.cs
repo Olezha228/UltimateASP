@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Contracts.Manager;
 using Repository.Manager;
 using Service.Contracts.Manager;
 using Service.Manager;

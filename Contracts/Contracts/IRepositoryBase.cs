@@ -1,4 +1,6 @@
-﻿namespace Contracts;
+﻿using System.Linq.Expressions;
+
+namespace Contracts.Contracts;
 
 public interface IRepositoryBase<T>
 {

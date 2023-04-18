@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Contracts.Contracts;
+using Contracts.Manager;
 using Repository.Repositories;
 
 namespace Repository.Manager;

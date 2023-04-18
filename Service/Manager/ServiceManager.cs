@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Contracts.Manager;
 using LoggerService;
 using Service.Contracts.Manager;
 using Service.Contracts.ServiceInterfaces;

@@ -1,6 +1,6 @@
 ﻿using Contracts.Contracts;
 
-namespace Contracts;
+namespace Contracts.Manager;
 
 public interface IRepositoryManager
 {
