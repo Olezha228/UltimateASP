@@ -14,6 +14,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             {
                 Id = new Guid("c9d4c053-49b6-410c-bc78-2d54a9991870"),
                 Name = "IT_Solutions Ltd",
+                // ReSharper disable once StringLiteralTypo
                 Address = "583 Wall Dr. Gwynn Oak, MD 21207",
                 Country = "USA"
             },

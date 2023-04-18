@@ -1,5 +1,4 @@
 ﻿using Contracts;
-using LoggerService;
 using Repository.Manager;
 using Service.Contracts.Manager;
 using Service.Manager;

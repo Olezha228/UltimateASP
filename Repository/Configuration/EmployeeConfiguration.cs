@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+// ReSharper disable StringLiteralTypo
+
 namespace Repository.Configuration;
 
 public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>

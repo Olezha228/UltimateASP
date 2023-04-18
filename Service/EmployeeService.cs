@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Contracts;
+﻿using Contracts;
 using LoggerService;
-using Service.Contracts.Services;
+using Service.Contracts.ServiceInterfaces;
 
 namespace Service;
 

@@ -1,4 +1,4 @@
-﻿using Service.Contracts.Services;
+﻿using Service.Contracts.ServiceInterfaces;
 
 namespace Service.Contracts.Manager;
 
