@@ -1,4 +1,6 @@
+using Contracts.Manager;
 using Microsoft.AspNetCore.Mvc;
+using Service.Contracts.Manager;
 
 namespace UltimateASP.Controllers;
 
@@ -7,10 +9,12 @@ namespace UltimateASP.Controllers;
 public class WeatherForecastController : ControllerBase
 {
     private ILoggerManager _logger;
+    private IRepositoryManager _repository;
 
-    public WeatherForecastController(ILoggerManager logger)
+    public WeatherForecastController(ILoggerManager logger, IRepositoryManager repository)
     {
         _logger = logger;
+        _repository = repository;
     }
 
     [HttpGet]
@@ -21,7 +25,7 @@ public class WeatherForecastController : ControllerBase
         _logger.LogWarn("Here is warn message from our values controller.");
         _logger.LogError("Here is an error message from our values controller.");
 
-        return new[] { "value1", "value2" };
+        return _repository.Company.FindAll();
     }
 
 }

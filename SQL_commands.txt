@@ -1,0 +1,21 @@
+docker exec -it mssql2022_1 sh 
+// to enter the container
+
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Rpassw!1'
+// to enter the db
+
+1> select name from sys.databases;
+2> go
+name
+--------------------------------------------------------------------------------------------------------------------------------
+master
+tempdb
+model
+msdb
+CompanyEmployee
+
+(5 rows affected)
+1> use CompanyEmployee
+2> go
+Changed database context to 'CompanyEmployee'.
+

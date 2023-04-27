@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Contracts.Manager;
+using Entities.Models;
 using LoggerService;
 using Service.Contracts.ServiceInterfaces;
 
@@ -15,5 +16,10 @@ internal sealed class CompanyService : ICompanyService
     {
         _repository = repository;
         _logger = logger;
+    }
+
+    public IEnumerable<Company> GetAll()
+    {
+        _repository.Company
     }
 }

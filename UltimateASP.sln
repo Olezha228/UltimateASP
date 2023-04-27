@@ -15,9 +15,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Re
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{24290785-A430-4850-AD78-2A3F185E297C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Contracts", "Service.Contracts\Service.Contracts.csproj", "{66084066-B558-4BBE-8CCB-F8589C187D47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Contracts", "Service.Contracts\Service.Contracts.csproj", "{66084066-B558-4BBE-8CCB-F8589C187D47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{6F6EC260-3784-41EF-A46E-400FD1E372D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{6F6EC260-3784-41EF-A46E-400FD1E372D7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{3BB6735B-6586-4DA1-BB0A-BA78C1C5778E}"
+	ProjectSection(SolutionItems) = preProject
+		SQL_commands.txt = SQL_commands.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{0A22ED00-0EF1-4B24-B2E9-1E648888356B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logger", "Logger", "{8F9006A0-AEA8-4077-A7B5-956FB6F8EBE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +67,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{FA409AA4-8A11-4A8C-9CF7-DCC4868E84E2} = {8F9006A0-AEA8-4077-A7B5-956FB6F8EBE5}
 		{66084066-B558-4BBE-8CCB-F8589C187D47} = {24290785-A430-4850-AD78-2A3F185E297C}
 		{6F6EC260-3784-41EF-A46E-400FD1E372D7} = {24290785-A430-4850-AD78-2A3F185E297C}
 	EndGlobalSection
