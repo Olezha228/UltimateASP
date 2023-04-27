@@ -18,14 +18,12 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<string> Get()
+    public void Get()
     {
         _logger.LogInfo("Here is info message from our values controller.");
         _logger.LogDebug("Here is debug message from our values controller.");
         _logger.LogWarn("Here is warn message from our values controller.");
         _logger.LogError("Here is an error message from our values controller.");
-
-        return _repository.Company.FindAll();
     }
 
 }

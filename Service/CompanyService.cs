@@ -17,9 +17,4 @@ internal sealed class CompanyService : ICompanyService
         _repository = repository;
         _logger = logger;
     }
-
-    public IEnumerable<Company> GetAll()
-    {
-        _repository.Company
-    }
 }
