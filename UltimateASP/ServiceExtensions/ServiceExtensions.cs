@@ -11,6 +11,7 @@ public static class ServiceExtensions
         services.ConfigureIISIntegration();
         services.AddControllers();
         services.ConfigureSqlContext(configuration);
+        services.ConfigureControllers();
     }
 
     private static void ConfigureCors(this IServiceCollection services) =>
@@ -32,5 +33,13 @@ public static class ServiceExtensions
         IConfiguration configuration) =>
         services.AddDbContext<RepositoryContext>(opts =>
             opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
+
+    // ReSharper disable once InconsistentNaming
+    private static void ConfigureControllers(this IServiceCollection services) =>
+        services.AddControllers()
+            .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
+
+
+
 
 }

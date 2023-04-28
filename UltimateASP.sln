@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entiti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{C89C4EC7-0731-4B8E-82D8-0CE0FB2EB33D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{24290785-A430-4850-AD78-2A3F185E297C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Contracts", "Service.Contracts\Service.Contracts.csproj", "{66084066-B558-4BBE-8CCB-F8589C187D47}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{6F6EC260-3784-41EF-A46E-400FD1E372D7}"
@@ -24,9 +22,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{3BB6735B
 		SQL_commands.txt = SQL_commands.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{0A22ED00-0EF1-4B24-B2E9-1E648888356B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{25495939-B07A-45E6-9C00-871976632A9B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logger", "Logger", "{8F9006A0-AEA8-4077-A7B5-956FB6F8EBE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompanyEmployees.Presentation", "CompanyEmployees.Presentation\CompanyEmployees.Presentation.csproj", "{98649E67-B920-4D27-B18B-CF7C9681D354}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,14 +60,16 @@ Global
 		{6F6EC260-3784-41EF-A46E-400FD1E372D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F6EC260-3784-41EF-A46E-400FD1E372D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F6EC260-3784-41EF-A46E-400FD1E372D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98649E67-B920-4D27-B18B-CF7C9681D354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98649E67-B920-4D27-B18B-CF7C9681D354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98649E67-B920-4D27-B18B-CF7C9681D354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98649E67-B920-4D27-B18B-CF7C9681D354}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{FA409AA4-8A11-4A8C-9CF7-DCC4868E84E2} = {8F9006A0-AEA8-4077-A7B5-956FB6F8EBE5}
-		{66084066-B558-4BBE-8CCB-F8589C187D47} = {24290785-A430-4850-AD78-2A3F185E297C}
-		{6F6EC260-3784-41EF-A46E-400FD1E372D7} = {24290785-A430-4850-AD78-2A3F185E297C}
+		{98649E67-B920-4D27-B18B-CF7C9681D354} = {25495939-B07A-45E6-9C00-871976632A9B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0DFB5F4-30C2-4538-8588-07C4C17BF8B5}
