@@ -24,7 +24,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{3BB6735B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{25495939-B07A-45E6-9C00-871976632A9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompanyEmployees.Presentation", "CompanyEmployees.Presentation\CompanyEmployees.Presentation.csproj", "{98649E67-B920-4D27-B18B-CF7C9681D354}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompanyEmployees.Presentation", "CompanyEmployees.Presentation\CompanyEmployees.Presentation.csproj", "{98649E67-B920-4D27-B18B-CF7C9681D354}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{208C2E17-E59F-4857-AE58-97C1F66CB35A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{834C76D5-4E95-4D26-90D7-B7F3B934959F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,12 +68,17 @@ Global
 		{98649E67-B920-4D27-B18B-CF7C9681D354}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98649E67-B920-4D27-B18B-CF7C9681D354}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98649E67-B920-4D27-B18B-CF7C9681D354}.Release|Any CPU.Build.0 = Release|Any CPU
+		{834C76D5-4E95-4D26-90D7-B7F3B934959F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{834C76D5-4E95-4D26-90D7-B7F3B934959F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{834C76D5-4E95-4D26-90D7-B7F3B934959F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{834C76D5-4E95-4D26-90D7-B7F3B934959F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{98649E67-B920-4D27-B18B-CF7C9681D354} = {25495939-B07A-45E6-9C00-871976632A9B}
+		{834C76D5-4E95-4D26-90D7-B7F3B934959F} = {208C2E17-E59F-4857-AE58-97C1F66CB35A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0DFB5F4-30C2-4538-8588-07C4C17BF8B5}

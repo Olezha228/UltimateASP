@@ -12,6 +12,8 @@ public static class ServiceExtensions
         services.AddControllers();
         services.ConfigureSqlContext(configuration);
         services.ConfigureControllers();
+        services.AddAutoMapper(typeof(Program));
+
     }
 
     private static void ConfigureCors(this IServiceCollection services) =>
