@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Entities.ErrorModel;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace UltimateASP.ServiceExtensions.Middleware;
@@ -21,12 +22,18 @@ public static class ExceptionMiddlewareExtensions
 
                 if (contextFeature != null)
                 {
+                    context.Response.StatusCode = contextFeature.Error switch
+                    {
+                        NotFoundException => StatusCodes.Status404NotFound,
+                        _ => StatusCodes.Status500InternalServerError
+                    };
+
                     logger.LogError($"Something went wrong: {contextFeature.Error}");
 
                     await context.Response.WriteAsync(new ErrorDetails()
                     {
                         StatusCode = context.Response.StatusCode,
-                        Message = "Internal Server Error."
+                        Message = contextFeature.Error.Message
                     }.ToString());
                 }
             });

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts.Manager;
+using Entities.Exceptions;
 using LoggerService;
 using Service.Contracts.ServiceInterfaces;
 using Shared.DataTransferObjects;
@@ -33,6 +34,11 @@ internal sealed class CompanyService : ICompanyService
     public CompanyDto GetCompany(Guid companyId, bool trackChanges)
     {
         var company = _repository.Company.GetCompany(companyId, trackChanges);
+
+        if (company is null)
+        {
+            throw new CompanyNotFoundException(companyId);
+        }
 
         var companyDto = _mapper.Map<CompanyDto>(company);
 
