@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Contracts;
 using Contracts.Manager;
 using LoggerService;
 using Service.Contracts.ServiceInterfaces;

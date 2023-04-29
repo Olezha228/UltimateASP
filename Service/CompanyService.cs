@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Contracts.Manager;
-using Entities.Models;
 using LoggerService;
 using Service.Contracts.ServiceInterfaces;
 using Shared.DataTransferObjects;
@@ -13,7 +12,8 @@ internal sealed class CompanyService : ICompanyService
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
 
-    public CompanyService(IRepositoryManager repository, ILoggerManager logger,
+    public CompanyService(IRepositoryManager repository,
+        ILoggerManager logger,
         IMapper mapper)
     {
         _repository = repository;
@@ -21,22 +21,10 @@ internal sealed class CompanyService : ICompanyService
         _mapper = mapper;
     }
 
-
     public IEnumerable<CompanyDto> GetAllCompanies(bool trackChanges)
     {
-        try
-        {
-            var companies = _repository.Company.GetAllCompanies(trackChanges);
-
-            var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
-
-            return companiesDto;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Something went wrong in the {nameof(GetAllCompanies)} service method {ex}");
-
-            throw;
-        }
+        var companies = _repository.Company.GetAllCompanies(trackChanges);
+        var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
+        return companiesDto;
     }
 }

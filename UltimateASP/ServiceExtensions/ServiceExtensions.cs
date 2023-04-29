@@ -7,6 +7,7 @@ public static class ServiceExtensions
 {
     public static void ConfigureServices(this IServiceCollection services, ConfigurationManager configuration)
     {
+        services.ConfigureDI();
         services.ConfigureCors();
         services.ConfigureIISIntegration();
         services.AddControllers();
