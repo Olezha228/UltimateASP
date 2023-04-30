@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repository;
+using UltimateASP.Formatters;
 
 namespace UltimateASP.ServiceExtensions;
 
@@ -10,11 +11,9 @@ public static class ServiceExtensions
         services.ConfigureDI();
         services.ConfigureCors();
         services.ConfigureIISIntegration();
-        services.AddControllers();
         services.ConfigureSqlContext(configuration);
         services.ConfigureControllers();
         services.AddAutoMapper(typeof(Program));
-
     }
 
     private static void ConfigureCors(this IServiceCollection services) =>
@@ -37,12 +36,15 @@ public static class ServiceExtensions
         services.AddDbContext<RepositoryContext>(opts =>
             opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
 
-    // ReSharper disable once InconsistentNaming
     private static void ConfigureControllers(this IServiceCollection services) =>
-        services.AddControllers()
+        services.AddControllers(config => {
+                config.RespectBrowserAcceptHeader = true;
+                config.ReturnHttpNotAcceptable = true;
+            }).AddXmlDataContractSerializerFormatters()
+            .AddCustomCSVFormatter()
             .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 
-
-
-
+    public static IMvcBuilder AddCustomCSVFormatter(this IMvcBuilder builder) =>
+        builder.AddMvcOptions(config => config.OutputFormatters.Add(new
+            CsvOutputFormatter()));
 }
