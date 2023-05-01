@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Manager;
+using Shared.DataTransferObjects;
 
 namespace CompanyEmployees.Presentation.Controllers;
 
@@ -19,11 +20,25 @@ public class EmployeesController : ControllerBase
         return Ok(employees);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetEmployeeForCompany")]
     public IActionResult GetEmployeeForCompany(Guid companyId, Guid id)
     {
         var employee = _service.EmployeeService.GetEmployee(companyId, id, trackChanges: false);
 
         return Ok(employee);
+    }
+
+    [HttpPost]
+    public IActionResult CreateEmployeeForCompany(Guid companyId, [FromBody] EmployeeForCreationDto employeeForCreation)
+    {
+        var employee =
+            _service.EmployeeService.CreateEmployeeForCompany(companyId, employeeForCreation, trackChanges: false);
+
+        if (employee is null)
+        {
+            return BadRequest("EmployeeForCreationDto object is null");
+        }
+
+        return CreatedAtRoute(nameof(GetEmployeeForCompany), new { companyId = companyId, id = employee.Id }, employee);
     }
 }
