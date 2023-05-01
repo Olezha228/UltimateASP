@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Cont
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "LoggerService\LoggerService.csproj", "{FA409AA4-8A11-4A8C-9CF7-DCC4868E84E2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{2A9B31BC-298B-4EFE-A4F2-702D3DC7A61E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Domain\Entities\Entities.csproj", "{2A9B31BC-298B-4EFE-A4F2-702D3DC7A61E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{C89C4EC7-0731-4B8E-82D8-0CE0FB2EB33D}"
 EndProject
@@ -28,7 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompanyEmployees.Presentati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{208C2E17-E59F-4857-AE58-97C1F66CB35A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{834C76D5-4E95-4D26-90D7-B7F3B934959F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{834C76D5-4E95-4D26-90D7-B7F3B934959F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{59778B59-FC98-416F-BB59-8AF92CDCC23D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{2A9B31BC-298B-4EFE-A4F2-702D3DC7A61E} = {59778B59-FC98-416F-BB59-8AF92CDCC23D}
 		{98649E67-B920-4D27-B18B-CF7C9681D354} = {25495939-B07A-45E6-9C00-871976632A9B}
 		{834C76D5-4E95-4D26-90D7-B7F3B934959F} = {208C2E17-E59F-4857-AE58-97C1F66CB35A}
 	EndGlobalSection

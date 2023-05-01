@@ -41,5 +41,4 @@ public class CompaniesController : ControllerBase
 
         return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
     }
-
 }
