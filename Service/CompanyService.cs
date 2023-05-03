@@ -56,7 +56,6 @@ internal sealed class CompanyService : ICompanyService
         var companyToReturn = _mapper.Map<CompanyDto>(companyEntity);
 
         return companyToReturn;
-
     }
 
     public IEnumerable<CompanyDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges)

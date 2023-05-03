@@ -41,4 +41,12 @@ public class EmployeesController : ControllerBase
 
         return CreatedAtRoute(nameof(GetEmployeeForCompany), new { companyId = companyId, id = employee.Id }, employee);
     }
+
+    [HttpDelete("{id:guid}")]
+    public IActionResult DeleteEmployeeForCompany(Guid companyId, Guid id)
+    {
+        _service.EmployeeService.DeleteEmployeeForCompany(companyId, id, trackChanges: false);
+
+        return NoContent();
+    }
 }
