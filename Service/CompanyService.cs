@@ -46,18 +46,6 @@ internal sealed class CompanyService : ICompanyService
         return companyDto;
     }
 
-    public CompanyDto CreateCompany(CompanyForCreationDto? company)
-    {
-        var companyEntity = _mapper.Map<Company>(company);
-         
-        _repository.Company.CreateCompany(companyEntity);
-        _repository.Save();
-
-        var companyToReturn = _mapper.Map<CompanyDto>(companyEntity);
-
-        return companyToReturn;
-    }
-
     public IEnumerable<CompanyDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges)
     {
         if (ids is null)
@@ -76,6 +64,18 @@ internal sealed class CompanyService : ICompanyService
         var companiesToReturn = _mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
 
         return companiesToReturn;
+    }
+
+    public CompanyDto CreateCompany(CompanyForCreationDto? company)
+    {
+        var companyEntity = _mapper.Map<Company>(company);
+         
+        _repository.Company.CreateCompany(companyEntity);
+        _repository.Save();
+
+        var companyToReturn = _mapper.Map<CompanyDto>(companyEntity);
+
+        return companyToReturn;
     }
 
     public (IEnumerable<CompanyDto> companies, string ids) CreateCompanyCollection
@@ -101,5 +101,18 @@ internal sealed class CompanyService : ICompanyService
         var ids = string.Join(",", collectionToReturn.Select(c => c.Id));
 
         return (companies: collectionToReturn, ids);
+    }
+
+    public void DeleteCompany(Guid companyId, bool trackChanges)
+    {
+        var company = _repository.Company.GetCompany(companyId, trackChanges);
+
+        if (company is null)
+        {
+            throw new CompanyNotFoundException(companyId);
+        }
+
+        _repository.Company.DeleteCompany(company);
+        _repository.Save();
     }
 }
