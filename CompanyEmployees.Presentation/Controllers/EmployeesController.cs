@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Manager;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.Employee;
 
 namespace CompanyEmployees.Presentation.Controllers;
 
@@ -46,6 +47,21 @@ public class EmployeesController : ControllerBase
     public IActionResult DeleteEmployeeForCompany(Guid companyId, Guid id)
     {
         _service.EmployeeService.DeleteEmployeeForCompany(companyId, id, trackChanges: false);
+
+        return NoContent();
+    }
+
+    [HttpPut("{id:guid}")]
+    public IActionResult UpdateEmployeeForCompany(Guid companyId, Guid id,
+        [FromBody] EmployeeForUpdateDto? employee)
+    {
+        if (employee is null)
+        {
+            return BadRequest("EmployeeForUpdateDto object is null");
+        }
+
+        _service.EmployeeService.UpdateEmployeeForCompany(companyId, id, employee,
+            companyTrackChanges: false, employeeTrackChanges: true);
 
         return NoContent();
     }

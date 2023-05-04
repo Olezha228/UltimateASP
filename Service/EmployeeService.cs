@@ -5,6 +5,7 @@ using Entities.Models;
 using LoggerService;
 using Service.Contracts.ServiceInterfaces;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.Employee;
 
 namespace Service;
 
@@ -98,4 +99,29 @@ internal sealed class EmployeeService : IEmployeeService
         _repository.Employee.DeleteEmployee(employeeForCompany);
         _repository.Save();
     }
+
+    public void UpdateEmployeeForCompany(Guid companyId, Guid id, EmployeeForUpdateDto?
+            employeeForUpdate,
+        bool companyTrackChanges, bool employeeTrackChanges)
+    {
+        var company = _repository.Company.GetCompany(companyId, companyTrackChanges);
+
+        if (company is null)
+        {
+            throw new CompanyNotFoundException(companyId);
+        }
+
+        var employeeEntity = _repository.Employee.GetEmployee(companyId, id, employeeTrackChanges);
+
+        if (employeeEntity is null)
+        {
+            throw new EmployeeNotFoundException(id);
+        }
+
+        //thus changing the state of the employeeEntity object to Modified.
+        _mapper.Map(employeeForUpdate, employeeEntity);
+
+        _repository.Save();
+    }
+
 }

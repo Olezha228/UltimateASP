@@ -1,4 +1,5 @@
 ﻿using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.Company;
 
 namespace Service.Contracts.ServiceInterfaces;
 
@@ -8,7 +9,7 @@ public interface ICompanyService
 
     CompanyDto GetCompany(Guid companyId, bool trackChanges);
 
-    public IEnumerable<CompanyDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
+    IEnumerable<CompanyDto> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
 
     CompanyDto CreateCompany(CompanyForCreationDto? company);
 
@@ -16,4 +17,7 @@ public interface ICompanyService
         (IEnumerable<CompanyForCreationDto> companyCollection);
 
     void DeleteCompany(Guid companyId, bool trackChanges);
+
+    void UpdateCompany(Guid companyId, CompanyForUpdateDto? companyForUpdate, bool
+        trackChanges);
 }
