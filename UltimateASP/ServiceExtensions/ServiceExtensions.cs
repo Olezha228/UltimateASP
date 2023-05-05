@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Repository;
 using UltimateASP.Formatters;
 
@@ -41,6 +43,7 @@ public static class ServiceExtensions
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
+                config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
             }).AddXmlDataContractSerializerFormatters()
             .AddCustomCsvFormatter()
             .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
@@ -51,4 +54,11 @@ public static class ServiceExtensions
 
     public static void ConfigureApiBehaviorOptions(this IServiceCollection services) =>
         services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
+
+    static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
+        new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
+            .Services.BuildServiceProvider()
+            .GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters
+            .OfType<NewtonsoftJsonPatchInputFormatter>().First();
 }

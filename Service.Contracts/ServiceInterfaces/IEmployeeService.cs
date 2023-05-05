@@ -1,4 +1,5 @@
-﻿using Shared.DataTransferObjects;
+﻿using Entities.Models;
+using Shared.DataTransferObjects;
 using Shared.DataTransferObjects.Employee;
 
 namespace Service.Contracts.ServiceInterfaces;
@@ -17,4 +18,9 @@ public interface IEmployeeService
     void UpdateEmployeeForCompany(Guid companyId, Guid id,
         EmployeeForUpdateDto? employeeForUpdate,
         bool companyTrackChanges, bool employeeTrackChanges);
+
+    (EmployeeForUpdateDto employeeToPatch, Employee employeeEntity) GetEmployeeForPatch(
+        Guid companyId, Guid id, bool companyTrackChanges, bool employeeTrackChanges);
+
+    void SaveChangesForPatch(EmployeeForUpdateDto employeeToPatch, Employee employeeEntity);
 }

@@ -1,9 +1,9 @@
-﻿using System.Resources;
-using CompanyEmployees.Presentation.ModelBinders;
+﻿using CompanyEmployees.Presentation.ModelBinders;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Manager;
-using Shared.DataTransferObjects;
 using Shared.DataTransferObjects.Company;
+using Shared.DataTransferObjects.Employee;
 
 namespace CompanyEmployees.Presentation.Controllers;
 
@@ -80,5 +80,4 @@ public class CompaniesController : ControllerBase
 
         return NoContent();
     }
-
 }
