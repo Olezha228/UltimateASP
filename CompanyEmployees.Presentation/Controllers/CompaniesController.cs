@@ -1,9 +1,7 @@
 ﻿using CompanyEmployees.Presentation.ModelBinders;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Manager;
 using Shared.DataTransferObjects.Company;
-using Shared.DataTransferObjects.Employee;
 
 namespace CompanyEmployees.Presentation.Controllers;
 
@@ -39,6 +37,11 @@ public class CompaniesController : ControllerBase
             return BadRequest("CompanyForCreationDto object is null");
         }
 
+        if (!ModelState.IsValid)
+        {
+            return UnprocessableEntity(ModelState);
+        }
+
         var createdCompany = _service.CompanyService.CreateCompany(company);
 
         return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
@@ -55,6 +58,11 @@ public class CompaniesController : ControllerBase
     [HttpPost("collection")]
     public IActionResult CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companyCollection)
     {
+        if (!ModelState.IsValid)
+        {
+            return UnprocessableEntity(ModelState);
+        }
+
         var result = _service.CompanyService.CreateCompanyCollection(companyCollection);
 
         return CreatedAtRoute("CompanyCollection", new { result.ids }, result.companies);
@@ -74,6 +82,11 @@ public class CompaniesController : ControllerBase
         if (company is null)
         {
             return BadRequest("CompanyForUpdateDto object is null");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return UnprocessableEntity(ModelState);
         }
 
         _service.CompanyService.UpdateCompany(id, company, trackChanges: true);

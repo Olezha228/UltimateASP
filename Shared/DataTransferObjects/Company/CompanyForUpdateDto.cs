@@ -1,6 +1,6 @@
 ﻿using Shared.DataTransferObjects.Employee;
+using System.ComponentModel.DataAnnotations;
 
 namespace Shared.DataTransferObjects.Company;
 
-public record CompanyForUpdateDto(string Name, string Address, string Country,
-    IEnumerable<EmployeeForCreationDto> Employees);
+public record CompanyForUpdateDto : CompanyForManipulationDto;

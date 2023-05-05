@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Manager;
-using Shared.DataTransferObjects;
-using Microsoft.AspNetCore.JsonPatch;
 using Shared.DataTransferObjects.Employee;
 
 namespace CompanyEmployees.Presentation.Controllers;
@@ -32,16 +30,27 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateEmployeeForCompany(Guid companyId, [FromBody] EmployeeForCreationDto employeeForCreation)
+    public IActionResult CreateEmployeeForCompany(Guid companyId, [FromBody] EmployeeForCreationDto? employeeForCreation)
     {
+        if (employeeForCreation is null)
+        {
+            return BadRequest("EmployeeForCreationDto object is null");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return UnprocessableEntity(ModelState);
+        }
+
         var employee =
             _service.EmployeeService.CreateEmployeeForCompany(companyId, employeeForCreation, trackChanges: false);
 
         if (employee is null)
         {
-            return BadRequest("EmployeeForCreationDto object is null");
+            return BadRequest("EmployeeDto object is null");
         }
 
+        // ReSharper disable once RedundantAnonymousTypePropertyName
         return CreatedAtRoute(nameof(GetEmployeeForCompany), new { companyId = companyId, id = employee.Id }, employee);
     }
 
@@ -60,6 +69,11 @@ public class EmployeesController : ControllerBase
         if (employee is null)
         {
             return BadRequest("EmployeeForUpdateDto object is null");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return UnprocessableEntity(ModelState);
         }
 
         _service.EmployeeService.UpdateEmployeeForCompany(companyId, id, employee,
@@ -81,7 +95,14 @@ public class EmployeesController : ControllerBase
             companyTrackChanges: false,
             employeeTrackChanges: true);
 
-        patchDocument.ApplyTo(result.employeeToPatch);
+        patchDocument.ApplyTo(result.employeeToPatch, ModelState);
+
+        TryValidateModel(result.employeeToPatch);
+
+        if (!ModelState.IsValid)
+        {
+            return UnprocessableEntity(ModelState);
+        }
 
         _service.EmployeeService.SaveChangesForPatch(result.employeeToPatch, result.employeeEntity);
 

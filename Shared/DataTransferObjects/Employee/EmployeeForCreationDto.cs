@@ -1,3 +1,5 @@
-﻿namespace Shared.DataTransferObjects.Employee;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record EmployeeForCreationDto(string Name, int Age, string Position);
+namespace Shared.DataTransferObjects.Employee;
+
+public record EmployeeForCreationDto : EmployeeForManipulationDto;
