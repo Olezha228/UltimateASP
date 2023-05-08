@@ -26,16 +26,17 @@ internal sealed class EmployeeService : IEmployeeService
         _serviceHelper = serviceHelper;
     }
 
-    public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(Guid companyId,
-        EmployeeRequestParameters employeeParameters, bool trackChanges)
+    public async Task<(IEnumerable<EmployeeDto> employees, MetaData metaData)> GetEmployeesAsync
+        (Guid companyId, EmployeeRequestParameters employeeParameters, bool trackChanges)
     {
         _ = await _serviceHelper.GetCompanyAndCheckIfItExists(companyId, trackChanges);
-            
-        var employeesFromDb = await _repository.Employee.GetEmployeesAsync(companyId, employeeParameters, trackChanges);
 
-        var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesFromDb);
+        var employeesWithMetaData = await _repository.Employee
+            .GetEmployeesAsync(companyId, employeeParameters, trackChanges);
 
-        return employeesDto;
+        var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesWithMetaData);
+
+        return (employees: employeesDto, metaData: employeesWithMetaData.MetaData);
     }
 
     public async Task<EmployeeDto> GetEmployeeAsync(Guid companyId, Guid id, bool trackChanges)

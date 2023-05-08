@@ -7,8 +7,8 @@ namespace Service.Contracts.ServiceInterfaces;
 
 public interface IEmployeeService
 {
-    Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(Guid companyId,
-        EmployeeRequestParameters employeeParameters, bool trackChanges);
+    Task<(IEnumerable<EmployeeDto> employees, MetaData metaData)> GetEmployeesAsync(Guid
+        companyId, EmployeeRequestParameters employeeParameters, bool trackChanges);
 
     Task<EmployeeDto> GetEmployeeAsync(Guid companyId, Guid id, bool trackChanges);
 
