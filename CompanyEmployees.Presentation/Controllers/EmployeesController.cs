@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using CompanyEmployees.Presentation.ActionFilters;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Manager;
 using Shared.DataTransferObjects.Employee;
+using Shared.RequestFeatures;
 
 namespace CompanyEmployees.Presentation.Controllers;
 
@@ -14,9 +16,11 @@ public class EmployeesController : ControllerBase
     public EmployeesController(IServiceManager service) => _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetEmployeesForCompany(Guid companyId)
+    public async Task<IActionResult> GetEmployeesForCompany(Guid companyId,
+        [FromQuery] EmployeeRequestParameters employeeParameters)
     {
-        var employees = await _service.EmployeeService.GetEmployeesAsync(companyId, trackChanges: false);
+        var employees = await _service.EmployeeService.GetEmployeesAsync(companyId,
+            employeeParameters, trackChanges: false);
 
         return Ok(employees);
     }
@@ -30,18 +34,9 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateEmployeeForCompany(Guid companyId, [FromBody] EmployeeForCreationDto? employeeForCreation)
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
+    public async Task<IActionResult> CreateEmployeeForCompany(Guid companyId, [FromBody] EmployeeForCreationDto employeeForCreation)
     {
-        if (employeeForCreation is null)
-        {
-            return BadRequest("EmployeeForCreationDto object is null");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return UnprocessableEntity(ModelState);
-        }
-
         var employee =
             await _service.EmployeeService.CreateEmployeeForCompanyAsync(companyId, employeeForCreation, trackChanges: false);
 
@@ -63,38 +58,25 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [ServiceFilter(typeof(ValidationFilterAttribute))]
     public async Task<IActionResult> UpdateEmployeeForCompany(Guid companyId, Guid id,
-        [FromBody] EmployeeForUpdateDto? employee)
+        [FromBody] EmployeeForUpdateDto employee)
     {
-        if (employee is null)
-        {
-            return BadRequest("EmployeeForUpdateDto object is null");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return UnprocessableEntity(ModelState);
-        }
-
         await _service.EmployeeService.UpdateEmployeeForCompanyAsync(companyId, id, employee, companyTrackChanges: false, employeeTrackChanges: true);
 
         return NoContent();
     }
 
     [HttpPatch("{id:guid}")]
+    [ServiceFilter(typeof(JsonPatchValidationFilter))]
     public async Task<IActionResult> PartiallyUpdateEmployeeForCompany(Guid companyId, Guid id,
-        [FromBody] JsonPatchDocument<EmployeeForUpdateDto>? patchDocument)
+        [FromBody] JsonPatchDocument<EmployeeForUpdateDto> patchDocument)
     {
-        if (patchDocument is null)
-        {
-            return BadRequest("patchDocument object sent from client is null.");
-        }
-
         var result = await _service.EmployeeService.GetEmployeeForPatchAsync(companyId, id,
             companyTrackChanges: false,
             employeeTrackChanges: true);
 
-        patchDocument.ApplyTo(result.employeeToPatch, ModelState);
+        patchDocument.ApplyTo(result.employeeToPatch);
 
         TryValidateModel(result.employeeToPatch);
 

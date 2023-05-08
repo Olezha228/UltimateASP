@@ -13,14 +13,17 @@ internal sealed class CompanyService : ICompanyService
     private readonly IRepositoryManager _repository;
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
+    private readonly ServiceHelper _serviceHelper;
 
     public CompanyService(IRepositoryManager repository,
         ILoggerManager logger,
-        IMapper mapper)
+        IMapper mapper,
+        ServiceHelper serviceHelper)
     {
         _repository = repository;
         _logger = logger;
         _mapper = mapper;
+        _serviceHelper = serviceHelper;
     }
 
     public async Task<IEnumerable<CompanyDto>> GetAllCompaniesAsync(bool trackChanges)
@@ -34,25 +37,19 @@ internal sealed class CompanyService : ICompanyService
 
     public async Task<CompanyDto> GetCompanyAsync(Guid companyId, bool trackChanges)
     {
-        var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
+        var companyEntity = await _serviceHelper.GetCompanyAndCheckIfItExists(companyId, trackChanges);
 
-        if (company is null)
-        {
-            throw new CompanyNotFoundException(companyId);
-        }
-
-        var companyDto = _mapper.Map<CompanyDto>(company);
+        var companyDto = _mapper.Map<CompanyDto>(companyEntity);
 
         return companyDto;
     }
 
     public async Task<IEnumerable<CompanyDto>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges)
     {
-        if (ids is null)
-        {
-            throw new IdParametersBadRequestException();
-        }
+        // ReSharper disable once PossibleMultipleEnumeration
+        _serviceHelper.CheckIfIdsAreNotNull(ids);
 
+        // ReSharper disable once PossibleMultipleEnumeration
         var idsList = ids.ToList();
         var companyEntities = await _repository.Company.GetByIdsAsync(idsList, trackChanges);
 
@@ -81,10 +78,7 @@ internal sealed class CompanyService : ICompanyService
     public async Task<(IEnumerable<CompanyDto> companies, string ids)> CreateCompanyCollectionAsync
         (IEnumerable<CompanyForCreationDto> companyCollection)
     {
-        if (companyCollection is null)
-        {
-            throw new CompanyCollectionBadRequest();
-        }
+        _serviceHelper.CheckIfCompanyCollectionNotNull(companyCollection);
             
         var companyEntities = _mapper.Map<IEnumerable<Company>>(companyCollection);
 
@@ -105,25 +99,15 @@ internal sealed class CompanyService : ICompanyService
 
     public async Task DeleteCompanyAsync(Guid companyId, bool trackChanges)
     {
-        var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
+        var companyEntity = await _serviceHelper.GetCompanyAndCheckIfItExists(companyId, trackChanges);
 
-        if (company is null)
-        {
-            throw new CompanyNotFoundException(companyId);
-        }
-
-        _repository.Company.DeleteCompany(company);
+        _repository.Company.DeleteCompany(companyEntity);
         await _repository.SaveAsync();
     }
 
     public async Task UpdateCompanyAsync(Guid companyId, CompanyForUpdateDto? companyForUpdate, bool trackChanges)
     {
-        var companyEntity = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
-
-        if (companyEntity is null)
-        {
-            throw new CompanyNotFoundException(companyId);
-        }
+        var companyEntity = await _serviceHelper.GetCompanyAndCheckIfItExists(companyId, trackChanges);
 
         _mapper.Map(companyForUpdate, companyEntity);
 

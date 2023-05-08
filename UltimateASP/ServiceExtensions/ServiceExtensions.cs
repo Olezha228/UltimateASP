@@ -12,6 +12,7 @@ public static class ServiceExtensions
     public static void ConfigureServices(this IServiceCollection services, ConfigurationManager configuration)
     {
         services.ConfigureDI();
+
         services.ConfigureCors();
         services.ConfigureIISIntegration();
         services.ConfigureSqlContext(configuration);
@@ -54,8 +55,7 @@ public static class ServiceExtensions
 
     public static void ConfigureApiBehaviorOptions(this IServiceCollection services) =>
         services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-
-
+    
     static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
         new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
             .Services.BuildServiceProvider()

@@ -1,12 +1,14 @@
 ﻿using Entities.Models;
 using Shared.DataTransferObjects;
 using Shared.DataTransferObjects.Employee;
+using Shared.RequestFeatures;
 
 namespace Service.Contracts.ServiceInterfaces;
 
 public interface IEmployeeService
 {
-    Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(Guid companyId, bool trackChanges);
+    Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(Guid companyId,
+        EmployeeRequestParameters employeeParameters, bool trackChanges);
 
     Task<EmployeeDto> GetEmployeeAsync(Guid companyId, Guid id, bool trackChanges);
 
