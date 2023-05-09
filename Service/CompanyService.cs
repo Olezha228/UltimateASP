@@ -53,7 +53,7 @@ internal sealed class CompanyService : ICompanyService
         var idsList = ids.ToList();
         var companyEntities = await _repository.Company.GetByIdsAsync(idsList, trackChanges);
 
-        if (idsList.Count() != companyEntities.Count())
+        if (idsList.Count != companyEntities.Count())
         {
             throw new CollectionByIdsBadRequestException();
         }

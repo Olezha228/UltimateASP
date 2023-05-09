@@ -1,5 +1,4 @@
-﻿using Shared.DataTransferObjects;
-using Shared.DataTransferObjects.Company;
+﻿using Shared.DataTransferObjects.Company;
 
 namespace Service.Contracts.ServiceInterfaces;
 

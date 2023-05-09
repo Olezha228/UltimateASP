@@ -1,5 +1,4 @@
-﻿using Contracts;
-using Contracts.Contracts;
+﻿using Contracts.Contracts;
 using Contracts.Manager;
 using Repository.Repositories;
 

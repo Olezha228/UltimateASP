@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Extensions.Utility;
 
@@ -11,7 +7,7 @@ public static class OrderQueryBuilder
 {
     public static string CreateOrderQuery<T>(string orderByQueryString)
     {
-        var orderParams = GetParamsArray<T>(orderByQueryString);
+        var orderParams = GetParamsArray(orderByQueryString);
 
         var propertyInfos = GetPropertiesOfType<T>();
 
@@ -19,7 +15,7 @@ public static class OrderQueryBuilder
 
         BuildOrderQuery<T>(orderParams, propertyInfos, orderQueryBuilder);
 
-        var orderQuery = TrimOrderQueryBuilderEnd<T>(orderQueryBuilder);
+        var orderQuery = TrimOrderQueryBuilderEnd(orderQueryBuilder);
 
         return orderQuery;
     }
@@ -34,38 +30,38 @@ public static class OrderQueryBuilder
                 continue;
             }
 
-            var propertyFromQueryName = GetPropertyFromQueryName<T>(param);
+            var propertyFromQueryName = GetPropertyFromQueryName(param);
 
-            var objectProperty = GetObjectProperty<T>(propertyInfos, propertyFromQueryName);
+            var objectProperty = GetObjectProperty(propertyInfos, propertyFromQueryName);
 
             if (objectProperty == null)
             {
                 continue;
             }
 
-            var direction = DetermineDirection<T>(param);
+            var direction = DetermineDirection(param);
 
             orderQueryBuilder.Append($"{objectProperty.Name} {direction}, ");
         }
     }
 
-    private static string TrimOrderQueryBuilderEnd<T>(StringBuilder orderQueryBuilder)
+    private static string TrimOrderQueryBuilderEnd(StringBuilder orderQueryBuilder)
     {
         return orderQueryBuilder.ToString().TrimEnd(',', ' ');
     }
 
-    private static string DetermineDirection<T>(string param)
+    private static string DetermineDirection(string param)
     {
         return param.EndsWith(" desc") ? "descending" : "ascending";
     }
 
-    private static PropertyInfo? GetObjectProperty<T>(PropertyInfo[] propertyInfos, string propertyFromQueryName)
+    private static PropertyInfo? GetObjectProperty(PropertyInfo[] propertyInfos, string propertyFromQueryName)
     {
         return propertyInfos.FirstOrDefault(pi =>
             pi.Name.Equals(propertyFromQueryName, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private static string GetPropertyFromQueryName<T>(string param)
+    private static string GetPropertyFromQueryName(string param)
     {
         return param.Split(" ")[0];
     }
@@ -76,7 +72,7 @@ public static class OrderQueryBuilder
                                        BindingFlags.Instance);
     }
 
-    private static string[] GetParamsArray<T>(string orderByQueryString)
+    private static string[] GetParamsArray(string orderByQueryString)
     {
         return orderByQueryString.Trim().Split(',');
     }

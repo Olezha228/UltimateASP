@@ -1,13 +1,7 @@
 ﻿using Entities.Exceptions;
 using Entities.Models;
 using Shared.DataTransferObjects.Company;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Contracts.Manager;
-using System.ComponentModel.Design;
 
 namespace Service;
 

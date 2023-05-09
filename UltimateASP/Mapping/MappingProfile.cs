@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Entities.Models;
-using Shared.DataTransferObjects;
 using Shared.DataTransferObjects.Company;
 using Shared.DataTransferObjects.Employee;
 
