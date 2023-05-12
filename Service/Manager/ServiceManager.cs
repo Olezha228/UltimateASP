@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Contracts.Contracts;
 using Contracts.Manager;
 using LoggerService;
 using Service.Contracts.Manager;
 using Service.Contracts.ServiceInterfaces;
+using Shared.DataTransferObjects.Employee;
 
 namespace Service.Manager;
 
@@ -11,13 +13,14 @@ public sealed class ServiceManager : IServiceManager
     private readonly Lazy<ICompanyService> _companyService;
     private readonly Lazy<IEmployeeService> _employeeService;
 
-    public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, ServiceHelper serviceHelper)
+    public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger,
+        IMapper mapper, IDataShaper<EmployeeDto> dataShaper, ServiceHelper serviceHelper)
     {
         _companyService = new Lazy<ICompanyService>(() => 
             new CompanyService(repositoryManager, logger, mapper, serviceHelper));
 
         _employeeService = new Lazy<IEmployeeService>(() =>
-            new EmployeeService(repositoryManager, logger, mapper, serviceHelper));
+            new EmployeeService(repositoryManager, logger, mapper, dataShaper, serviceHelper));
     }
 
     public ICompanyService CompanyService => _companyService.Value;

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contracts.Contracts;
 using Contracts.Manager;
 using Entities.Exceptions;
 using Entities.Models;
@@ -6,6 +7,7 @@ using LoggerService;
 using Service.Contracts.ServiceInterfaces;
 using Shared.DataTransferObjects.Employee;
 using Shared.RequestFeatures;
+using System.Dynamic;
 
 namespace Service;
 
@@ -14,18 +16,20 @@ internal sealed class EmployeeService : IEmployeeService
     private readonly IRepositoryManager _repository;
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
+    private readonly IDataShaper<EmployeeDto> _dataShaper;
     private readonly ServiceHelper _serviceHelper;
 
     public EmployeeService(IRepositoryManager repository,
-        ILoggerManager logger, IMapper mapper, ServiceHelper serviceHelper)
+        ILoggerManager logger, IMapper mapper, IDataShaper<EmployeeDto> dataShaper, ServiceHelper serviceHelper)
     {
         _repository = repository;
         _logger = logger;
         _mapper = mapper;
+        _dataShaper = dataShaper;
         _serviceHelper = serviceHelper;
     }
 
-    public async Task<(IEnumerable<EmployeeDto> employees, MetaData metaData)> GetEmployeesAsync
+    public async Task<(IEnumerable<ExpandoObject> employees, MetaData metaData)> GetEmployeesAsync
         (Guid companyId, EmployeeRequestParameters employeeParameters, bool trackChanges)
     {
         if (!employeeParameters.ValidAgeRange)
@@ -38,7 +42,10 @@ internal sealed class EmployeeService : IEmployeeService
 
         var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesWithMetaData);
 
-        return (employees: employeesDto, metaData: employeesWithMetaData.MetaData);
+        var shapedData = _dataShaper.ShapeData(employeesDto,
+            employeeParameters.Fields);
+
+        return (employees: shapedData, metaData: employeesWithMetaData.MetaData);
     }
 
     public async Task<EmployeeDto> GetEmployeeAsync(Guid companyId, Guid id, bool trackChanges)

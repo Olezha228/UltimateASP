@@ -5,7 +5,7 @@ using Contracts.Manager;
 
 namespace Service;
 
-public class ServiceHelper
+public class ServiceHelper : IServiceHelper
 {
     private readonly IRepositoryManager _repository;
 

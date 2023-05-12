@@ -1,9 +1,12 @@
 ﻿using CompanyEmployees.Presentation.ActionFilters;
+using Contracts.Contracts;
 using Contracts.Manager;
 using Repository.Manager;
 using Service;
 using Service.Contracts.Manager;
+using Service.DataShaping;
 using Service.Manager;
+using Shared.DataTransferObjects.Employee;
 
 namespace UltimateASP.ServiceExtensions;
 
@@ -14,9 +17,10 @@ public static class DIConfiguration
         services.ConfigureLoggerService();
         services.ConfigureRepositoryManager();
         services.ConfigureServiceManager();
-        services.AddTransient<ServiceHelper>();
+        services.ConfigureServiceHelper();
         services.ConfigureValidationFilter();
         services.ConfigureJsonPatchValidationFilter();
+        services.ConfigureEmployeeDataShaping();
     }
 
     private static void ConfigureLoggerService(this IServiceCollection services) =>
@@ -28,10 +32,16 @@ public static class DIConfiguration
     private static void ConfigureServiceManager(this IServiceCollection services) =>
         services.AddScoped<IServiceManager, ServiceManager>();
 
+    private static void ConfigureServiceHelper(this IServiceCollection services) =>
+        services.AddTransient<ServiceHelper>();
+
     private static void ConfigureValidationFilter(this IServiceCollection services) =>
         services.AddScoped<ValidationFilterAttribute>();
 
     private static void ConfigureJsonPatchValidationFilter(this IServiceCollection services) =>
         services.AddScoped<JsonPatchValidationFilter>();
+
+    private static void ConfigureEmployeeDataShaping(this IServiceCollection services) =>
+        services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
 
 }
