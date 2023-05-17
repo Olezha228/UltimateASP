@@ -33,6 +33,7 @@ public static class ServiceExtensions
 
     // ReSharper disable once InconsistentNaming
     private static void ConfigureIISIntegration(this IServiceCollection services) =>
+        // ReSharper disable once UnusedParameter.Local
         services.Configure<IISOptions>(options => { });
 
     private static void ConfigureSqlContext(this IServiceCollection services,

@@ -13,14 +13,14 @@ public static class OrderQueryBuilder
 
         var orderQueryBuilder = new StringBuilder();
 
-        BuildOrderQuery<T>(orderParams, propertyInfos, orderQueryBuilder);
+        BuildOrderQuery(orderParams, propertyInfos, orderQueryBuilder);
 
         var orderQuery = TrimOrderQueryBuilderEnd(orderQueryBuilder);
 
         return orderQuery;
     }
 
-    private static void BuildOrderQuery<T>(string[] orderParams, PropertyInfo[] propertyInfos,
+    private static void BuildOrderQuery(string[] orderParams, PropertyInfo[] propertyInfos,
         StringBuilder orderQueryBuilder)
     {
         foreach (var param in orderParams)

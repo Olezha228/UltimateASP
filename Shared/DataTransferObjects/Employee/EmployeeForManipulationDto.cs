@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+// ReSharper disable UnusedMember.Global
 
 namespace Shared.DataTransferObjects.Employee;
 

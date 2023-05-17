@@ -5,6 +5,7 @@ using Shared.DataTransferObjects.Employee;
 
 namespace UltimateASP.Mapping;
 
+// ReSharper disable once UnusedMember.Global
 public class MappingProfile : Profile
 {
     public MappingProfile()

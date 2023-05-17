@@ -10,7 +10,7 @@ public static class RepositoryEmployeeExtensions
         employees.Where(e => (e.Age >= minAge && e.Age <= maxAge));
 
     public static IQueryable<Employee> Search(this IQueryable<Employee> employees,
-        string searchTerm)
+        string? searchTerm)
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
@@ -22,8 +22,8 @@ public static class RepositoryEmployeeExtensions
         return employees.Where(e => (e.Name != null) && e.Name.ToLower().Contains(lowerCaseTerm));
     }
 
-    public static IQueryable<Employee> Sort(this IQueryable<Employee> employees, string
-        orderByQueryString)
+    public static IQueryable<Employee> Sort(this IQueryable<Employee> employees,
+        string? orderByQueryString)
     {
         if (string.IsNullOrWhiteSpace(orderByQueryString))
         {

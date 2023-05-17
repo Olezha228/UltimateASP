@@ -17,10 +17,10 @@ public class DataShaper<T> : IDataShaper<T> where T : class
     public IEnumerable<ExpandoObject> ShapeData(IEnumerable<T> entities,
         string? fieldsString)
     {
-        if (fieldsString is null)
-        {
-            return new List<ExpandoObject>();
-        }
+        //if (fieldsString is null)
+        //{
+        //    return new List<ExpandoObject>();
+        //}
 
         var requiredProperties = GetRequiredProperties(fieldsString);
 
@@ -29,17 +29,17 @@ public class DataShaper<T> : IDataShaper<T> where T : class
 
     public ExpandoObject ShapeData(T entity, string? fieldsString)
     {
-        if (fieldsString is null)
-        {
-            return new ExpandoObject();
-        }
+        //if (fieldsString is null)
+        //{
+        //    return new ExpandoObject();
+        //}
 
         var requiredProperties = GetRequiredProperties(fieldsString);
 
         return FetchDataForEntity(entity, requiredProperties);
     }
 
-    private IEnumerable<PropertyInfo> GetRequiredProperties(string fieldsString)
+    private IEnumerable<PropertyInfo> GetRequiredProperties(string? fieldsString)
     {
         var requiredProperties = new List<PropertyInfo>();
 

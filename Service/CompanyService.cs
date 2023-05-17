@@ -11,6 +11,7 @@ namespace Service;
 internal sealed class CompanyService : ICompanyService
 {
     private readonly IRepositoryManager _repository;
+    // ReSharper disable once NotAccessedField.Local
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
     private readonly ServiceHelper _serviceHelper;

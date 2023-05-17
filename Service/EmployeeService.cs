@@ -14,6 +14,7 @@ namespace Service;
 internal sealed class EmployeeService : IEmployeeService
 {
     private readonly IRepositoryManager _repository;
+    // ReSharper disable once NotAccessedField.Local
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
     private readonly IDataShaper<EmployeeDto> _dataShaper;

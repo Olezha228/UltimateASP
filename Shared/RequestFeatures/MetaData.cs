@@ -1,4 +1,5 @@
-﻿namespace Shared.RequestFeatures;
+﻿// ReSharper disable UnusedMember.Global
+namespace Shared.RequestFeatures;
 
 public class MetaData
 {

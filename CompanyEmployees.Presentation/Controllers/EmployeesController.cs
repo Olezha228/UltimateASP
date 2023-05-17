@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Manager;
 using Shared.DataTransferObjects.Employee;
 using Shared.RequestFeatures;
+// ReSharper disable RouteTemplates.ActionRoutePrefixCanBeExtractedToControllerRoute
 
 namespace CompanyEmployees.Presentation.Controllers;
 
-[Route("api/companies/{companyId}/employees")]
+[Route("api/companies/{companyId:guid}/employees")]
 [ApiController]
 public class EmployeesController : ControllerBase
 {

@@ -2,7 +2,7 @@
 
 namespace Contracts.Contracts;
 
-public interface IDataShaper<T>
+public interface IDataShaper<in T>
 {
     IEnumerable<ExpandoObject> ShapeData(IEnumerable<T> entities, string?
         fieldsString);

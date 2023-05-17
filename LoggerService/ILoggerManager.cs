@@ -1,4 +1,5 @@
-﻿namespace LoggerService;
+﻿// ReSharper disable UnusedMember.Global
+namespace LoggerService;
 
 public interface ILoggerManager
 {

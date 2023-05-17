@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable UnusedMember.Global
 
 namespace Contracts.Contracts;
 

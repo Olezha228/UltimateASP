@@ -4,6 +4,7 @@ using Repository;
 
 namespace UltimateASP.ContextFactory;
 
+// ReSharper disable once UnusedMember.Global
 public class RepositoryContextFactory : IDesignTimeDbContextFactory<RepositoryContext>
 {
     public RepositoryContext CreateDbContext(string[] args)

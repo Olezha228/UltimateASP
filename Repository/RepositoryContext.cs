@@ -1,6 +1,7 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.Configuration;
+// ReSharper disable UnusedMember.Global
 
 namespace Repository;
 
@@ -18,5 +19,6 @@ public class RepositoryContext : DbContext
     }
 
     public DbSet<Company>? Companies { get; set; }
+
     public DbSet<Employee>? Employees { get; set; }
 }

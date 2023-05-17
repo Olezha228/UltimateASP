@@ -20,6 +20,7 @@ public class Company
     [MaxLength(60, ErrorMessage = "Maximum length for the Address is 60 characters")]
     public string? Country { get; set; }
 
+    // ReSharper disable once UnusedMember.Global
     public ICollection<Employee>? Employees { get; set; }
 }
 
