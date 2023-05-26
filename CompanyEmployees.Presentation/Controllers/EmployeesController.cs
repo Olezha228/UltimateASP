@@ -35,7 +35,6 @@ public class EmployeesController : ControllerBase
         return linkResponse.HasLinks
             ? Ok(linkResponse.LinkedEntities)
             : Ok(linkResponse.ShapedEntities);
-
     }
 
     [HttpGet("{id:guid}", Name = "GetEmployeeForCompany")]
