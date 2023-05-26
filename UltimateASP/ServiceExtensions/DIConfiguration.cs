@@ -7,6 +7,7 @@ using Service.Contracts.Manager;
 using Service.DataShaping;
 using Service.Manager;
 using Shared.DataTransferObjects.Employee;
+using UltimateASP.Utility;
 
 namespace UltimateASP.ServiceExtensions;
 
@@ -20,7 +21,9 @@ public static class DIConfiguration
         services.ConfigureServiceHelper();
         services.ConfigureValidationFilter();
         services.ConfigureJsonPatchValidationFilter();
+        services.ConfigureValidateMediaTypeAttribute();
         services.ConfigureEmployeeDataShaping();
+        services.ConfigureEmployeeLinks();
     }
 
     private static void ConfigureLoggerService(this IServiceCollection services) =>
@@ -41,7 +44,13 @@ public static class DIConfiguration
     private static void ConfigureJsonPatchValidationFilter(this IServiceCollection services) =>
         services.AddScoped<JsonPatchValidationFilter>();
 
+    private static void ConfigureValidateMediaTypeAttribute(this IServiceCollection services) =>
+        services.AddScoped<ValidateMediaTypeAttribute>();
+
     private static void ConfigureEmployeeDataShaping(this IServiceCollection services) =>
         services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
+
+    private static void ConfigureEmployeeLinks(this IServiceCollection services) =>
+        services.AddScoped<IEmployeeLinks, EmployeeLinks>();
 
 }

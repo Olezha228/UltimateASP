@@ -14,14 +14,15 @@ public sealed class ServiceManager : IServiceManager
     private readonly Lazy<IEmployeeService> _employeeService;
 
     public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger,
-        IMapper mapper, IDataShaper<EmployeeDto> dataShaper, ServiceHelper serviceHelper)
+        IMapper mapper, IEmployeeLinks employeeLinks, ServiceHelper serviceHelper)
     {
-        _companyService = new Lazy<ICompanyService>(() => 
+        _companyService = new Lazy<ICompanyService>(() =>
             new CompanyService(repositoryManager, logger, mapper, serviceHelper));
 
         _employeeService = new Lazy<IEmployeeService>(() =>
-            new EmployeeService(repositoryManager, logger, mapper, dataShaper, serviceHelper));
+            new EmployeeService(repositoryManager, logger, mapper, employeeLinks, serviceHelper));
     }
+
 
     public ICompanyService CompanyService => _companyService.Value;
 

@@ -1,6 +1,7 @@
 ﻿using System.Dynamic;
 using System.Reflection;
 using Contracts.Contracts;
+using Entities.Models;
 
 namespace Service.DataShaping;
 
@@ -14,26 +15,16 @@ public class DataShaper<T> : IDataShaper<T> where T : class
                                              BindingFlags.Instance);
     }
 
-    public IEnumerable<ExpandoObject> ShapeData(IEnumerable<T> entities,
+    public IEnumerable<ShapedEntity> ShapeData(IEnumerable<T> entities,
         string? fieldsString)
     {
-        //if (fieldsString is null)
-        //{
-        //    return new List<ExpandoObject>();
-        //}
-
         var requiredProperties = GetRequiredProperties(fieldsString);
 
         return FetchData(entities, requiredProperties);
     }
 
-    public ExpandoObject ShapeData(T entity, string? fieldsString)
+    public ShapedEntity ShapeData(T entity, string? fieldsString)
     {
-        //if (fieldsString is null)
-        //{
-        //    return new ExpandoObject();
-        //}
-
         var requiredProperties = GetRequiredProperties(fieldsString);
 
         return FetchDataForEntity(entity, requiredProperties);
@@ -70,10 +61,10 @@ public class DataShaper<T> : IDataShaper<T> where T : class
         return requiredProperties;
     }
 
-    private IEnumerable<ExpandoObject> FetchData(IEnumerable<T> entities,
+    private IEnumerable<ShapedEntity> FetchData(IEnumerable<T> entities,
         IEnumerable<PropertyInfo> requiredProperties)
     {
-        var shapedData = new List<ExpandoObject>();
+        var shapedData = new List<ShapedEntity>();
         var propertyInfos = requiredProperties.ToList();
 
         foreach (var entity in entities)
@@ -85,15 +76,19 @@ public class DataShaper<T> : IDataShaper<T> where T : class
         return shapedData;
     }
 
-    private static ExpandoObject FetchDataForEntity(T entity,
+    private static ShapedEntity FetchDataForEntity(T entity,
         IEnumerable<PropertyInfo> requiredProperties)
     {
-        var shapedObject = new ExpandoObject();
+        var shapedObject = new ShapedEntity();
 
         foreach (var property in requiredProperties)
         {
             var objectPropertyValue = property.GetValue(entity);
-            shapedObject.TryAdd(property.Name, objectPropertyValue);
+
+            if (objectPropertyValue != null)
+            {
+                shapedObject.Entity.TryAdd(property.Name, objectPropertyValue);
+            }
         }
 
         return shapedObject;
