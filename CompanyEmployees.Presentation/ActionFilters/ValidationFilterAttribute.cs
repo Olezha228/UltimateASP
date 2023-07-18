@@ -16,6 +16,7 @@ public class ValidationFilterAttribute : IActionFilter
         if (param is null)
         {
             context.Result = new BadRequestObjectResult($"Object is null. Controller: { controller }, action: { action }.");
+
             return;
         }
 

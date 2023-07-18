@@ -7,7 +7,6 @@ using System.Xml.Serialization;
 
 namespace Entities.Models;
 
-
 public class Entity : DynamicObject, IXmlSerializable, IDictionary<string, object>
 {
     private const string Root = "Entity";
@@ -15,9 +14,7 @@ public class Entity : DynamicObject, IXmlSerializable, IDictionary<string, objec
 
     public Entity()
     {
-#pragma warning disable CS8619
-        _expando = new ExpandoObject();
-#pragma warning restore CS8619
+        _expando = new ExpandoObject()!;
     }
 
     public override bool TryGetMember(GetMemberBinder binder, out object? result)
@@ -25,6 +22,7 @@ public class Entity : DynamicObject, IXmlSerializable, IDictionary<string, objec
         if (_expando.TryGetValue(binder.Name, out var value))
         {
             result = value;
+
             return true;
         }
 
@@ -70,11 +68,12 @@ public class Entity : DynamicObject, IXmlSerializable, IDictionary<string, objec
         foreach (var key in _expando.Keys)
         {
             var value = _expando[key];
+
             WriteLinksToXml(key, value, writer);
         }
     }
 
-    private void WriteLinksToXml(string key, object value, XmlWriter writer)
+    private static void WriteLinksToXml(string key, object value, XmlWriter writer)
     {
         writer.WriteStartElement(key);
 

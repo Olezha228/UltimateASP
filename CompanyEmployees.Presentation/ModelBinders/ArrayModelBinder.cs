@@ -8,37 +8,89 @@ public class ArrayModelBinder : IModelBinder
 {
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (!bindingContext.ModelMetadata.IsEnumerableType)
+        if (!IsEnumerableType(bindingContext.ModelMetadata))
         {
-            bindingContext.Result = ModelBindingResult.Failed();
+            SetFailedBindingResult(bindingContext);
+
             return Task.CompletedTask;
         }
 
-        var providedValue = bindingContext.ValueProvider
-            .GetValue(bindingContext.ModelName)
-            .ToString();
+        var providedValue = GetProvidedValue(bindingContext);
 
         if (string.IsNullOrEmpty(providedValue))
         {
-            bindingContext.Result = ModelBindingResult.Success(null);
+            SetEmptyArrayBindingResult(bindingContext);
             return Task.CompletedTask;
         }
 
-        var genericType = bindingContext.ModelType.GetTypeInfo().GenericTypeArguments[0];
-        var converter = TypeDescriptor.GetConverter(genericType);
+        var genericType = GetGenericType(bindingContext.ModelType);
 
-        var objectArray = providedValue.Split(new[] { "," },
-                StringSplitOptions.RemoveEmptyEntries)
-            .Select(x => converter.ConvertFromString(x.Trim()))
-            .ToArray();
+        var objectArray = ConvertProvidedValueToArray(providedValue, genericType);
 
-        var guidArray = Array.CreateInstance(genericType, objectArray.Length);
+        var finalArray = CreateArrayOfType(genericType, objectArray.Length);
+        CopyObjectsToArray(objectArray, finalArray);
 
-        objectArray.CopyTo(guidArray, 0);
-
-        bindingContext.Model = guidArray;
-        bindingContext.Result = ModelBindingResult.Success(bindingContext.Model);
+        SetModelAndBindingResultSuccess(bindingContext, finalArray);
 
         return Task.CompletedTask;
+    }
+
+    // Проверяет, является ли тип модели перечислимым типом
+    private static bool IsEnumerableType(ModelMetadata modelMetadata)
+    {
+        return modelMetadata.IsEnumerableType;
+    }
+
+    // Устанавливает результат привязки модели как неудачный
+    private static void SetFailedBindingResult(ModelBindingContext bindingContext)
+    {
+        bindingContext.Result = ModelBindingResult.Failed();
+    }
+
+    // Получает предоставленное значение из ValueProvider (то есть просто значение параметра)
+    private static string GetProvidedValue(ModelBindingContext bindingContext)
+    {
+        return bindingContext.ValueProvider.GetValue(bindingContext.ModelName).ToString();
+    }
+
+    // Устанавливает результат привязки модели как успешный с пустым массивом
+    private static void SetEmptyArrayBindingResult(ModelBindingContext bindingContext)
+    {
+        bindingContext.Result = ModelBindingResult.Success(null);
+    }
+
+    // Получает Generic тип элементов массива
+    private static Type GetGenericType(Type modelType)
+    {
+        return modelType.GetTypeInfo().GenericTypeArguments[0];
+    }
+
+    // Разделяет предоставленное значение на отдельные элементы, преобразует их в объекты заданного типа и создает массив
+    private static object?[] ConvertProvidedValueToArray(string providedValue, Type genericType)
+    {
+        var converter = TypeDescriptor.GetConverter(genericType);
+
+        return providedValue.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(x => converter.ConvertFromString(x.Trim()))
+            .ToArray();
+    }
+
+    // Создает массив заданного типа с заданной длиной
+    private static Array CreateArrayOfType(Type genericType, int length)
+    {
+        return Array.CreateInstance(genericType, length);
+    }
+
+    // Копирует объекты из одного массива в другой
+    private static void CopyObjectsToArray(object?[] sourceArray, Array destinationArray)
+    {
+        sourceArray.CopyTo(destinationArray, 0);
+    }
+
+    // Устанавливает привязанную модель и результат привязки модели в контексте
+    private static void SetModelAndBindingResultSuccess(ModelBindingContext bindingContext, Array model)
+    {
+        bindingContext.Model = model;
+        bindingContext.Result = ModelBindingResult.Success(bindingContext.Model);
     }
 }

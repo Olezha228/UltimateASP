@@ -1,4 +1,5 @@
 ﻿using CompanyEmployees.Presentation.Controllers;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -23,6 +24,8 @@ public static class ServiceExtensions
         services.AddCustomMediaTypes();
         services.AddAutoMapper(typeof(Program));
         services.ConfigureVersioning();
+        services.ConfigureResponseCaching();
+        services.ConfigureHttpCacheHeaders();
     }
 
     private static void ConfigureCors(this IServiceCollection services) =>
@@ -51,6 +54,11 @@ public static class ServiceExtensions
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
                 config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+                config.CacheProfiles.Add("120SecondsDuration", new CacheProfile
+                {
+                    Duration = 120
+                });
+
             }).AddXmlDataContractSerializerFormatters()
             .AddCustomCsvFormatter()
             .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
@@ -89,14 +97,16 @@ public static class ServiceExtensions
                 .OfType<XmlDataContractSerializerOutputFormatter>()
                 .FirstOrDefault();
 
-            if (xmlOutputFormatter != null)
+            if (xmlOutputFormatter == null)
             {
-                xmlOutputFormatter.SupportedMediaTypes
-                    .Add("application/vnd.codemaze.hateoas+xml");
-
-                xmlOutputFormatter.SupportedMediaTypes
-                    .Add("application/vnd.codemaze.apiroot+xml");
+                return;
             }
+
+            xmlOutputFormatter.SupportedMediaTypes
+                .Add("application/vnd.codemaze.hateoas+xml");
+
+            xmlOutputFormatter.SupportedMediaTypes
+                .Add("application/vnd.codemaze.apiroot+xml");
         });
     }
 
@@ -117,4 +127,18 @@ public static class ServiceExtensions
         });
     }
 
+    public static void ConfigureResponseCaching(this IServiceCollection services) =>
+        services.AddResponseCaching();
+
+    public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
+        services.AddHttpCacheHeaders(
+            (expirationOpt) =>
+            {
+                expirationOpt.MaxAge = 65;
+                expirationOpt.CacheLocation = CacheLocation.Private;
+            },
+            (validationOpt) =>
+            {
+                validationOpt.MustRevalidate = true;
+            });
 }
