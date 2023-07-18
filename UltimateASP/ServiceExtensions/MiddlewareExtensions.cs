@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.HttpOverrides;
+﻿using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.HttpOverrides;
 using UltimateASP.ServiceExtensions.Middleware;
 
 namespace UltimateASP.ServiceExtensions; 
@@ -20,10 +21,12 @@ public static class MiddlewareExtension
             ForwardedHeaders = ForwardedHeaders.All
         });
 
+        // desirably before UseCors
+        app.UseIpRateLimiting();
+
         app.UseCors("CorsPolicy");
         app.UseResponseCaching(); // this one is gotta go after UseCors! always!
         app.UseHttpCacheHeaders();
-
 
         app.UseAuthorization();
         app.MapControllers();

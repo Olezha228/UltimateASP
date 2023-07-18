@@ -37,7 +37,6 @@ public class CompaniesController : ControllerBase
 
     [HttpPost(Name = "CreateCompany")]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
-
     public async Task<IActionResult> CreateCompany([FromBody] CompanyForCreationDto company)
     {
         var createdCompany = await _service.CompanyService.CreateCompanyAsync(company);

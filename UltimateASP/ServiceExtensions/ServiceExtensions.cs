@@ -1,4 +1,5 @@
-﻿using CompanyEmployees.Presentation.Controllers;
+﻿using AspNetCoreRateLimit;
+using CompanyEmployees.Presentation.Controllers;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -24,8 +25,17 @@ public static class ServiceExtensions
         services.AddCustomMediaTypes();
         services.AddAutoMapper(typeof(Program));
         services.ConfigureVersioning();
+
+        // caching and cache validation
         services.ConfigureResponseCaching();
         services.ConfigureHttpCacheHeaders();
+        services.ConfigureRateLimitingOptions();
+
+        // rate limiting
+        services.AddMemoryCache();
+        services.ConfigureRateLimitingOptions();
+        services.AddHttpContextAccessor();
+
     }
 
     private static void ConfigureCors(this IServiceCollection services) =>
@@ -141,4 +151,29 @@ public static class ServiceExtensions
             {
                 validationOpt.MustRevalidate = true;
             });
+
+    public static void ConfigureRateLimitingOptions(this IServiceCollection services)
+    {
+        var rateLimitRules = new List<RateLimitRule>
+        {
+            new()
+            {
+                Endpoint = "*",
+                Limit = 3,
+                Period = "5m"
+            }
+        };
+
+        // adding a created rule
+        services.Configure<IpRateLimitOptions>(opt => {
+            opt.GeneralRules = rateLimitRules;
+        });
+
+        services.AddSingleton<IRateLimitCounterStore,
+            MemoryCacheRateLimitCounterStore>();
+
+        services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+        services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+        services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+    }
 }
