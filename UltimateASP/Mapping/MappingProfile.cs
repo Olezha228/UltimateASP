@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.Models;
+using Shared.DataTransferObjects;
 using Shared.DataTransferObjects.Company;
 using Shared.DataTransferObjects.Employee;
 
@@ -13,6 +14,8 @@ public class MappingProfile : Profile
         MapCompanyDtos();
 
         MapEmployeeDtos();
+
+        CreateMap<UserForRegistrationDto, User>();
     }
 
     private void MapCompanyDtos()

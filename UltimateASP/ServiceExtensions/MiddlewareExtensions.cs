@@ -28,6 +28,7 @@ public static class MiddlewareExtension
         app.UseResponseCaching(); // this one is gotta go after UseCors! always!
         app.UseHttpCacheHeaders();
 
+        app.UseAuthentication(); // this one is gotta go before UseAuthorization! always!
         app.UseAuthorization();
         app.MapControllers();
     }
