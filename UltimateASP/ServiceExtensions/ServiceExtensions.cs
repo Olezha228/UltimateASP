@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using AspNetCoreRateLimit;
 using CompanyEmployees.Presentation.Controllers;
+using Entities.ConfigurationModels;
 using Entities.Models;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Identity;
@@ -46,6 +47,7 @@ public static class ServiceExtensions
         services.ConfigureIdentity();
 
         services.ConfigureJWT(configuration);
+        services.AddJwtConfiguration(configuration);
     }
 
     private static void ConfigureCors(this IServiceCollection services) =>
@@ -189,7 +191,7 @@ public static class ServiceExtensions
 
     public static void ConfigureIdentity(this IServiceCollection services)
     {
-        var builder = services.AddIdentity<User, IdentityRole>(o =>
+        services.AddIdentity<User, IdentityRole>(o =>
             {
                 o.Password.RequireDigit = true;
                 o.Password.RequireLowercase = false;
@@ -231,4 +233,8 @@ public static class ServiceExtensions
                 };
             });
     }
+
+    public static void AddJwtConfiguration(this IServiceCollection services,
+        IConfiguration configuration) =>
+        services.Configure<JwtConfiguration>(configuration.GetSection("JwtSettings"));
 }

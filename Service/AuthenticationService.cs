@@ -3,11 +3,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
+using Entities.ConfigurationModels;
 using Entities.Exceptions;
 using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Service.Contracts.ServiceInterfaces;
 using Shared.DataTransferObjects;
@@ -20,21 +21,21 @@ internal sealed class AuthenticationService : IAuthenticationService
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
-    private readonly IConfiguration _configuration;
+    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+    private readonly IOptionsMonitor<JwtConfiguration> _configuration;
     private readonly JwtConfiguration _jwtConfiguration;
 
     private User? _user;
 
     internal AuthenticationService(ILoggerManager logger, IMapper mapper,
-        UserManager<User> userManager, IConfiguration configuration)
+        UserManager<User> userManager,
+        IOptionsMonitor<JwtConfiguration> configuration)
     {
         _logger = logger;
         _mapper = mapper;
         _userManager = userManager;
         _configuration = configuration;
-
-        _jwtConfiguration = new JwtConfiguration();
-        _configuration.Bind(_jwtConfiguration.Section, _jwtConfiguration);
+        _jwtConfiguration = _configuration.CurrentValue;
     }
 
     public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
@@ -42,15 +43,16 @@ internal sealed class AuthenticationService : IAuthenticationService
         var user = _mapper.Map<User>(userForRegistration);
 
         var result = await _userManager.CreateAsync(user,
-            userForRegistration.Password);
+            userForRegistration.Password!);
 
         //If you want, before calling AddToRoleAsync or AddToRolesAsync, you
         //can check if roles exist in the database. But for that, you have to inject
         //RoleManager < TRole > and use the RoleExistsAsync method.
 
-
-        if (result.Succeeded)
+        if (result.Succeeded && userForRegistration.Roles is not null)
+        {
             await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
+        }
 
         return result;
     }
@@ -62,8 +64,11 @@ internal sealed class AuthenticationService : IAuthenticationService
         var isResultValid = IsPasswordMatches(userForAuth);
 
         if (!isResultValid.Result)
+        {
             _logger.LogWarn(
-                $"{nameof(ValidateUser)}: Authentication failed. Wrong user name or password.");
+                $"{nameof(ValidateUser)}:" +
+                "Authentication failed. Wrong user name or password.");
+        }
 
         return isResultValid.Result;
     }
@@ -75,6 +80,11 @@ internal sealed class AuthenticationService : IAuthenticationService
 
     public async Task<TokenDto> CreateToken(bool isUpdateTokenExpiryTime)
     {
+        if (_user == null || _user.UserName == null)
+        {
+            throw new Exception("Invalid user!");
+        }
+
         var signingCredentials = GetSigningCredentials();
         var claims = await GetClaims();
         var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
@@ -97,7 +107,7 @@ internal sealed class AuthenticationService : IAuthenticationService
 
     private static SigningCredentials GetSigningCredentials()
     {
-        var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
+        var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET")!);
 
         var secret = new SymmetricSecurityKey(key);
 
@@ -108,7 +118,7 @@ internal sealed class AuthenticationService : IAuthenticationService
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Name, _user.UserName)
+            new(ClaimTypes.Name, _user!.UserName!)
         };
 
         var roles = await _userManager.GetRolesAsync(_user);
@@ -121,8 +131,6 @@ internal sealed class AuthenticationService : IAuthenticationService
     private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials,
         IEnumerable<Claim> claims)
     {
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-
         var tokenOptions = new JwtSecurityToken
         (
             issuer: _jwtConfiguration.ValidIssuer,
@@ -135,7 +143,7 @@ internal sealed class AuthenticationService : IAuthenticationService
         return tokenOptions;
     }
 
-    private string GenerateRefreshToken()
+    private static string GenerateRefreshToken()
     {
         var randomNumber = new byte[32];
 
@@ -148,8 +156,6 @@ internal sealed class AuthenticationService : IAuthenticationService
 
     private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
     {
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = true,
@@ -157,7 +163,7 @@ internal sealed class AuthenticationService : IAuthenticationService
             ValidateIssuerSigningKey = true,
 
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"))),
+                Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET")!)),
 
             ValidateLifetime = true,
             ValidIssuer = _jwtConfiguration.ValidIssuer,
@@ -186,6 +192,11 @@ internal sealed class AuthenticationService : IAuthenticationService
     public async Task<TokenDto> RefreshToken(TokenDto tokenDto)
     {
         var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+
+        if (principal.Identity?.Name is null)
+        {
+            throw new RefreshTokenBadRequest();
+        }
 
         var user = await _userManager.FindByNameAsync(principal.Identity.Name);
 

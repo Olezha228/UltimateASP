@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Contracts.Contracts;
 using Contracts.Manager;
+using Entities.ConfigurationModels;
 using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Service.Contracts.Manager;
 using Service.Contracts.ServiceInterfaces;
-using Shared.DataTransferObjects.Employee;
 
 namespace Service.Manager;
 
@@ -22,8 +22,7 @@ public sealed class ServiceManager : IServiceManager
         IMapper mapper, IEmployeeLinks employeeLinks, 
         ServiceHelper serviceHelper,
         UserManager<User> userManager,
-        IConfiguration configuration)
-
+        IOptionsMonitor<JwtConfiguration> configuration)
     {
         _companyService = new Lazy<ICompanyService>(() =>
             new CompanyService(repositoryManager, logger, mapper, serviceHelper));
@@ -33,7 +32,6 @@ public sealed class ServiceManager : IServiceManager
 
         _authenticationService = new Lazy<IAuthenticationService>(() =>
             new AuthenticationService(logger, mapper, userManager, configuration));
-
     }
 
     public ICompanyService CompanyService => _companyService.Value;

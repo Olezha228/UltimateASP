@@ -14,6 +14,7 @@ public class ValidateMediaTypeAttribute : IActionFilter
         if (!acceptHeaderPresent)
         {
             context.Result = new BadRequestObjectResult($"Accept header is missing.");
+
             return;
         }
 

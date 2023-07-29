@@ -119,10 +119,7 @@ public class Entity : DynamicObject, IXmlSerializable, IDictionary<string, objec
         return _expando.ContainsKey(key);
     }
 
-    public ICollection<string> Keys
-    {
-        get { return _expando.Keys; }
-    }
+    public ICollection<string> Keys => _expando.Keys;
 
     public bool Remove(string key)
     {
