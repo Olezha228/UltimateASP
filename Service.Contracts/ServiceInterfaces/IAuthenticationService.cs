@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.Token;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ public interface IAuthenticationService
     
     Task<bool> ValidateUser(UserForAuthenticationDto userForAuth);
 
-    Task<string> CreateToken();
+    Task<TokenDto> CreateToken(bool isUpdateTokenExpiryTime);
+
+    Task<TokenDto> RefreshToken(TokenDto tokenDto);
 }

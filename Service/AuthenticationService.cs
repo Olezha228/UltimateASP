@@ -1,7 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
+using Entities.Exceptions;
 using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Service.Contracts.ServiceInterfaces;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.Token;
 
 namespace Service;
 
@@ -66,13 +69,26 @@ internal sealed class AuthenticationService : IAuthenticationService
         return (_user != null) && await _userManager.CheckPasswordAsync(_user, userForAuth.Password!);
     }
 
-    public async Task<string> CreateToken()
+    public async Task<TokenDto> CreateToken(bool isUpdateTokenExpiryTime)
     {
         var signingCredentials = GetSigningCredentials();
         var claims = await GetClaims();
         var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
 
-        return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        var refreshToken = GenerateRefreshToken();
+
+        _user.RefreshToken = refreshToken;
+
+        if (isUpdateTokenExpiryTime)
+        {
+            _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+        }
+
+        await _userManager.UpdateAsync(_user);
+
+        var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+        return new TokenDto(accessToken, refreshToken);
     }
 
     private static SigningCredentials GetSigningCredentials()
@@ -113,5 +129,85 @@ internal sealed class AuthenticationService : IAuthenticationService
         );
 
         return tokenOptions;
+    }
+
+    private string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+
+        using var rng = RandomNumberGenerator.Create();
+
+        rng.GetBytes(randomNumber);
+
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    {
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidateIssuerSigningKey = true,
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"))),
+
+            ValidateLifetime = true,
+            ValidIssuer = jwtSettings["validIssuer"],
+            ValidAudience = jwtSettings["validAudience"]
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+            !IsHmacSha256Algorithm(jwtSecurityToken))
+        {
+            throw new SecurityTokenException("Invalid token");
+        }
+
+        return principal;
+    }
+
+    private static bool IsHmacSha256Algorithm(JwtSecurityToken jwtSecurityToken)
+    {
+        return jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+            StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public async Task<TokenDto> RefreshToken(TokenDto tokenDto)
+    {
+        var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+
+        var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+
+        if (!IsUserExist(user) || !AreRefreshTokensEqual(tokenDto, user!) ||
+            IsRefreshTokenExpired(user!))
+        {
+            throw new RefreshTokenBadRequest();
+        }
+
+        _user = user;
+
+        return await CreateToken(isUpdateTokenExpiryTime: false);
+    }
+
+    private static bool IsRefreshTokenExpired(User user)
+    {
+        return user.RefreshTokenExpiryTime <= DateTime.Now;
+    }
+
+    private static bool AreRefreshTokensEqual(TokenDto tokenDto, User user)
+    {
+        return user.RefreshToken == tokenDto.RefreshToken;
+    }
+
+    private static bool IsUserExist(User? user)
+    {
+        return user != null;
     }
 }
